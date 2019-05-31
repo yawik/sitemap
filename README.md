@@ -1,4 +1,4 @@
-# YAWIK JobsSitemap
+# YAWIK Sitemap
 
 Generate sitemap for all active jobs.
 
