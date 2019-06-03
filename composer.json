@@ -1,6 +1,6 @@
 {
-    "name": "yawik/jobs-sitemap",
-    "description": "YAWIK module to generate sitemap xml for all jobs",
+    "name": "yawik/sitemap",
+    "description": "YAWIK module to generate sitemap xml",
     "keywords": [
         "yawik",
         "sitemap",
@@ -8,6 +8,7 @@
     ],
     "require": {
         "yawik/core": "^0.33",
+        "yawik/jobs": "^0.33",
         "samdark/sitemap": "^2.2"
     },
     "require-dev": {
@@ -17,7 +18,6 @@
         "yawik/auth": "^0.33",
         "yawik/settings": "^0.33",
         "yawik/applications": "^0.33",
-        "yawik/jobs": "^0.33",
         "yawik/cv": "^0.33",
         "yawik/organizations": "^0.33",
         "yawik/geo": "^1.0"
