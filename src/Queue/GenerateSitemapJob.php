@@ -17,6 +17,8 @@ use Zend\Log\LoggerAwareInterface;
 use Core\EventManager\EventManager;
 use Sitemap\Event\GenerateSitemapEvent;
 use Sitemap\Generator\SitemapGenerator;
+use SlmQueue\Queue\QueueAwareInterface;
+use SlmQueue\Queue\QueueAwareTrait;
 
 /**
  * TODO: description
@@ -24,9 +26,12 @@ use Sitemap\Generator\SitemapGenerator;
  * @author Mathias Gelhausen <gelhausen@cross-solution.de>
  * TODO: write tests
  */
-class GenerateSitemapJob extends MongoJob implements LoggerAwareInterface
+class GenerateSitemapJob extends MongoJob implements
+    LoggerAwareInterface,
+    QueueAwareInterface
 {
     use LoggerAwareJobTrait;
+    use QueueAwareTrait;
 
     /** @var EventManager */
     private $events;
@@ -92,6 +97,8 @@ class GenerateSitemapJob extends MongoJob implements LoggerAwareInterface
             );
         }
         $logger->info('Generated sitemap: ' . $name . ' -> ' . $sitemapUrl);
+        $this->getQueue()->push(PingGoogleJob::create($sitemapUrl));
+
         return $this->success();
     }
 }
