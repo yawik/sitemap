@@ -48,7 +48,7 @@ class SitemapOptions extends AbstractOptions
 
     public function getSitemapName(): string
     {
-        return './public/static/sitemaps' . $this->name . '.xml';
+        return './public/static/sitemaps/' . $this->name . '.xml';
     }
 
     /**
@@ -59,6 +59,11 @@ class SitemapOptions extends AbstractOptions
     public function getBaseUrl()
     {
         return $this->baseUrl;
+    }
+
+    public function prependBaseUrl(string $url): string
+    {
+        return $this->baseUrl . ltrim($url, '/');
     }
 
     /**
@@ -83,7 +88,7 @@ class SitemapOptions extends AbstractOptions
 
     public function getSitemapUrl(): string
     {
-        return $this->baseUrl . 'static/sitemaps' . $this->name . '_index.xml';
+        return $this->baseUrl . 'static/sitemaps/' . $this->name . '_index.xml';
     }
 
     /**

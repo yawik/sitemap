@@ -21,6 +21,7 @@ class RouteLink extends AbstractLink
 {
     private $name;
     private $params = [];
+    private $options = [];
 
     public function __construct(?string $name = null, ?array $params = [])
     {
@@ -52,5 +53,25 @@ class RouteLink extends AbstractLink
     public function getParams(): array
     {
         return $this->params;
+    }
+
+    /**
+     * Get options
+     *
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
+    /**
+     * Set options
+     *
+     * @param array $options
+     */
+    public function setOptions(array $options): void
+    {
+        $this->options = $options;
     }
 }

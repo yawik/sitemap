@@ -16,6 +16,8 @@ use Sitemap\Options\SitemapOptions;
 use Zend\Router\RouteInterface;
 use samdark\sitemap\Index;
 use samdark\sitemap\Sitemap;
+use Sitemap\Entity\UrlLink;
+use Sitemap\Entity\RouteLink;
 
 /**
  * TODO: description
@@ -39,9 +41,18 @@ class SitemapGenerator
     {
         $this->options->setName($name);
         $sitemap = new Sitemap($this->options->getSitemapName(), true);
+
         foreach ($links as $link) {
             $urls = [];
             foreach ($this->options->getLanguages() as $lang) {
+                /* NOTE:
+                 * Different url generating could be implemented using
+                 * the strategy pattern.
+                 * Given, that there are only two link types at the
+                 * moment, it is not done yet.
+                 * When adding more types, the strategy pattern should
+                 * be used then, though.
+                 */
                 switch (true) {
                     default:
                         continue 2;
@@ -54,12 +65,12 @@ class SitemapGenerator
                     case $link instanceof RouteLink:
                         $url = $this->router->assemble(
                             array_merge($link->getParams(), ['lang' => $lang]),
-                            ['name' => $link->getName()]
+                            array_merge($link->getOptions(), ['name' => $link->getName()])
                         );
                         break;
                 }
 
-                $urls[$lang] = $this->options->getBaseUrl() . $url;
+                $urls[$lang] = $this->options->prependBaseUrl($url);
             }
 
             $sitemap->addItem($urls, $link->getLastModified(), $link->getChangeFrequency(), $link->getPriority());

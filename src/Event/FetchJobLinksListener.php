@@ -40,9 +40,9 @@ class FetchJobLinksListener
         foreach ($jobs as $job) {
             $link = new RouteLink();
             $link->setName('lang/jobs/view');
-            $link->setParams(['id' => $job->getId()]);
+            $link->setOptions(['query' => ['id' => $job->getId()]]);
             $link->setLastModified($job->getDateModified());
-            $link->setChangeFrequency(Sitemap::DAILY);
+            $link->setChangeFrequency(Sitemap::MONTHLY);
 
             $collection->addLink($link);
         }

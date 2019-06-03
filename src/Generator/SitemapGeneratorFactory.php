@@ -27,12 +27,9 @@ class SitemapGeneratorFactory
         ?string $requestedName = null,
         ?array $options = null
     ): SitemapGenerator {
-        $sitemapOptions = $container->get(SitemapOptions::class);
-        $router = $container->get('Router');
-
         return new SitemapGenerator(
-            $sitemapOptions,
-            $router
+            $container->get(SitemapOptions::class),
+            $container->get('HttpRouter')
         );
     }
 }
