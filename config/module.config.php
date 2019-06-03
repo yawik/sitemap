@@ -10,6 +10,7 @@ return [
             Generator\SitemapGenerator::class => Generator\SitemapGeneratorFactory::class,
             Options\SitemapOptions::class => Options\SitemapOptionsFactory::class,
             Event\FetchJobLinksListener::class => Event\FetchJobLinksListenerFactory::class,
+            Event\JobDbEventsSubscriber::class => Event\JobDbEventsSubscriberFactory::class,
         ],
     ],
 
@@ -26,6 +27,16 @@ return [
         'aliases' => [
             'sitemap' => Controller\Plugin\Sitemap::class,
         ]
+    ],
+
+    'doctrine' => [
+        'eventmanager' => [
+            'odm_default' => [
+                'subscribers' => [
+                    Event\JobDbEventsSubscriber::class,
+                ],
+            ],
+        ],
     ],
 
     'event_manager' => [
