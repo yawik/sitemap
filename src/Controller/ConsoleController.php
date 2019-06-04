@@ -25,9 +25,15 @@ class ConsoleController extends AbstractConsoleController
     {
         return [
             'Sitemap console commands',
+            'sitemap list' => 'List all available sitemap generators.',
             'sitemap generate <name>'  => 'Enqueues generation of sitemap <name>',
             ''
         ];
+    }
+
+    public function listAction()
+    {
+        ($this->plugin(Plugin\ListSitemapGenerators::class))();
     }
 
     public function generateAction()

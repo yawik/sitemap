@@ -23,6 +23,7 @@ return [
     'controller_plugins' => [
         'factories' => [
             Controller\Plugin\Sitemap::class => Controller\Plugin\SitemapFactory::class,
+            Controller\Plugin\ListSitemapGenerators::class => Controller\Plugin\ListSitemapGeneratorsFactory::class,
         ],
         'aliases' => [
             'sitemap' => Controller\Plugin\Sitemap::class,
@@ -45,6 +46,13 @@ return [
             'event' => Event\GenerateSitemapEvent::class,
             'listeners' => [
                 Event\FetchJobLinksListener::class => [Event\GenerateSitemapEvent::getEventName('jobs'), true],
+            ],
+        ],
+        'Sitemap/ListGenerators/Events' => [
+            'service' => 'Core/EventManager',
+            'event' => Event\ListSitemapGeneratorsEvent::class,
+            'listeners' => [
+                Event\SitemapGeneratorsListListener::class => Event\ListSitemapGeneratorsEvent::FETCH,
             ],
         ],
     ],
@@ -109,6 +117,15 @@ return [
                             'action' => 'generate',
                         ]
                     ]
+                ],
+                'sitemap-list' => [
+                    'options' => [
+                        'route' => 'sitemap list',
+                        'defaults' => [
+                            'controller' => Controller\ConsoleController::class,
+                            'action' => 'list'
+                        ],
+                    ],
                 ],
             ],
         ],
