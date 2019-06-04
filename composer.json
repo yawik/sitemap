@@ -31,7 +31,7 @@
     ],
     "extra": {
         "zf": {
-            "module": "Landingpages"
+            "module": "Sitemap"
         }
     },
     "autoload": {
