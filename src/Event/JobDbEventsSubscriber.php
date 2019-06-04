@@ -27,13 +27,15 @@ use Sitemap\Queue\GenerateSitemapJob;
  */
 class JobDbEventsSubscriber implements EventSubscriber
 {
-    /** @var MongoQueue */
+    /** @var MongoQueue|null */
     private $queue;
+    /** @var callable */
+    private $queueFactory;
     private $mustEnqueue = false;
 
-    public function __construct(MongoQueue $queue)
+    public function __construct(callable $queueFactory)
     {
-        $this->queue = $queue;
+        $this->queueFactory = $queueFactory;
     }
 
     public function getSubscribedEvents()
@@ -75,7 +77,17 @@ class JobDbEventsSubscriber implements EventSubscriber
             return;
         }
 
-        $this->queue->push(GenerateSitemapJob::create(['name' => 'jobs']));
+        $queue = $this->getQueue();
+        $queue->push(GenerateSitemapJob::create(['name' => 'jobs']));
         $this->mustEnqueue = false;
+    }
+
+    private function getQueue(): MongoQueue
+    {
+        if (!$this->queue) {
+            $this->queue = ($this->queueFactory)();
+        }
+
+        return $this->queue;
     }
 }

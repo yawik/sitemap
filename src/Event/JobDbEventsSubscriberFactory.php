@@ -28,7 +28,9 @@ class JobDbEventsSubscriberFactory
         ?array $options = null
     ): JobDbEventsSubscriber {
         return new JobDbEventsSubscriber(
-            $container->get(QueuePluginManager::class)->get('sitemap')
+            function () use ($container): MongoQueue {
+                return $container->get(QueuePluginManager::class)->get('sitemap');
+            }
         );
     }
 }
