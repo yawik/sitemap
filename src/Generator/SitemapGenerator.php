@@ -109,7 +109,7 @@ class SitemapGenerator
 
             $logger->debug('Urls generated: ' . PHP_EOL . ' - ' . join(PHP_EOL . ' - ', $urls));
             if (count($urls) == 1) {
-                $urls = $urls[0];
+                $urls = array_pop($urls);
                 $logger->debug('Use single url: ' . $urls);
             }
 
