@@ -44,7 +44,9 @@ class SitemapGenerator
 
         foreach ($links as $link) {
             $urls = [];
-            foreach ($this->options->getLanguages() as $lang) {
+            $languages = $link->getLanguages() ?? $this->options->getLanguages();
+
+            foreach ($languages as $lang) {
                 /* NOTE:
                  * Different url generating could be implemented using
                  * the strategy pattern.
@@ -71,6 +73,10 @@ class SitemapGenerator
                 }
 
                 $urls[$lang] = $this->options->prependBaseUrl($url);
+            }
+
+            if (count($urls) == 1) {
+                $urls = $urls[0];
             }
 
             $sitemap->addItem($urls, $link->getLastModified(), $link->getChangeFrequency(), $link->getPriority());

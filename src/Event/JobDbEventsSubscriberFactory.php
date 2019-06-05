@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * YAWIK Sitemap
  *
@@ -7,10 +7,9 @@
  * @license MIT
  */
 
-declare(strict_types=1);
-
 namespace Sitemap\Event;
 
+use Core\Queue\MongoQueue;
 use Interop\Container\ContainerInterface;
 use SlmQueue\Queue\QueuePluginManager;
 

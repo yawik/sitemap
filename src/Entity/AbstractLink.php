@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * YAWIK Sitemap
  *
@@ -6,8 +6,6 @@
  * @copyright 2019 CROSS Solution <https://www.cross-solution.de>
  * @license MIT
  */
-
-declare(strict_types=1);
 
 namespace Sitemap\Entity;
 
@@ -28,6 +26,8 @@ abstract class AbstractLink
     private $changeFrequency;
     /** @var float */
     private $priority;
+    /** @var string[]|null */
+    private $languages;
 
     public function setLastModified($lastModified): void
     {
@@ -90,5 +90,24 @@ abstract class AbstractLink
     public function getPriority(): ?float
     {
         return $this->priority;
+    }
+
+    public function setLanguages(?array $languages): void
+    {
+        $this->languages = $languages;
+    }
+
+    public function addLanguage(string $language, ...$languages): void
+    {
+        $this->languages[] = $language;
+
+        foreach ($languages as $lang) {
+            $this->addLanguage($lang);
+        }
+    }
+
+    public function getLanguages(): ?array
+    {
+        return $this->languages;
     }
 }
