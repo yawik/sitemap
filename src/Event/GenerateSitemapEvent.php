@@ -13,6 +13,8 @@ namespace Sitemap\Event;
 
 use Zend\EventManager\Event;
 use Sitemap\Entity\LinkCollection;
+use Zend\Log\LoggerInterface;
+use Psr\Log\LoggerTrait;
 
 /**
  * TODO: description
@@ -26,6 +28,7 @@ class GenerateSitemapEvent extends Event
 
     private $sitemapName;
     private $linkCollection;
+    private $logger;
 
     public static function getEventName(string $name): string
     {
@@ -40,6 +43,25 @@ class GenerateSitemapEvent extends Event
     public function getSitemapname(): ?string
     {
         return $this->sitemapName;
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
+    }
+
+    public function getLogger(): LoggerInterface
+    {
+        if (!$this->logger) {
+            $this->logger = new class implements LoggerInterface
+            {
+                use LoggerTrait;
+                //phpcs:ignore
+                public function log($level, $message, array $context = []) {}
+            };
+        }
+
+        return $this->logger;
     }
 
     public function getLinkCollection(): LinkCollection

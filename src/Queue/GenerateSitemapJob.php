@@ -72,6 +72,7 @@ class GenerateSitemapJob extends MongoJob implements
             $this,
             [
                 'sitemap_name' => $name,
+                'logger' => $logger,
             ]
         );
         $this->events->triggerEvent($event);
@@ -82,6 +83,7 @@ class GenerateSitemapJob extends MongoJob implements
         }
 
         $logger->info('Generating sitemap: ' . $name);
+        $this->generator->setLogger($logger);
         try {
             $sitemapUrl = $this->generator->generate($name, $linkCollection);
         } catch (\Exception $e) {
