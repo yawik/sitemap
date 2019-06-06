@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Sitemap\Controller;
 
 use Zend\Mvc\Console\Controller\AbstractConsoleController;
+use Sitemap\Queue\GenerateSitemapJob;
 
 /**
  * TODO: description
@@ -26,7 +27,9 @@ class ConsoleController extends AbstractConsoleController
         return [
             'Sitemap console commands',
             'sitemap list' => 'List all available sitemap generators.',
-            'sitemap generate <name>'  => 'Enqueues generation of sitemap <name>',
+            'sitemap generate <name>'  => 'Generates sitemap <name>',
+            'sitemap ping <name>' => 'Ping google.com the sitemap url of the sitemap <name>',
+            'sitemap enqueue <name>' => 'Enqueue the generation of sitemap <name>',
             ''
         ];
     }
@@ -40,8 +43,14 @@ class ConsoleController extends AbstractConsoleController
     {
         $name = $this->params('name');
 
-        $this->sitemap($name);
+        $this->sitemap($name, $this->params('ping'));
+    }
 
-        return "Enqueued generating of sitemap: $name\n\n";
+    public function enqueueAction()
+    {
+        $name = $this->params('name');
+
+        $this->queue('sitemap')->pushJob(GenerateSitemapJob::create(['name' => $name]));
+        echo 'Enqueued generate sitemap job.' . PHP_EOL;
     }
 }

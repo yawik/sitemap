@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * YAWIK Sitemap
  *
@@ -7,12 +7,10 @@
  * @license MIT
  */
 
-declare(strict_types=1);
-
 namespace Sitemap\Controller\Plugin;
 
-use Sitemap\Queue\GenerateSitemapJob;
-use SlmQueue\Controller\Plugin\QueuePlugin;
+use Sitemap\Service\Sitemap as SitemapService;
+use Zend\Log\LoggerInterface;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
 /**
@@ -23,17 +21,19 @@ use Zend\Mvc\Controller\Plugin\AbstractPlugin;
  */
 class Sitemap extends AbstractPlugin
 {
-    /** @var QueuePlugin */
-    private $queuePlugin;
+    /** @var SitemapService */
+    private $sitemap;
+    private $logger;
 
-    public function __construct(QueuePlugin $queuePlugin)
+    public function __construct(SitemapService $sitemap, LoggerInterface $logger)
     {
-        $this->queuePlugin = $queuePlugin;
+        $this->sitemap = $sitemap;
+        $this->logger = $logger;
     }
 
-    public function __invoke(string $name): void
+    public function __invoke(string $name, bool $ping = false): void
     {
-        $job = GenerateSitemapJob::create(['name' => $name]);
-        ($this->queuePlugin)('sitemap')->pushJob($job);
+        $this->sitemap->setLogger($this->logger);
+        $this->sitemap->{$ping ? 'ping' : 'generate'}($name);
     }
 }

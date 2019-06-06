@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * YAWIK Sitemap
  *
@@ -7,12 +7,11 @@
  * @license MIT
  */
 
-declare(strict_types=1);
-
 namespace Sitemap\Queue;
 
 use Interop\Container\ContainerInterface;
-use Sitemap\Generator\SitemapGenerator;
+use Sitemap\Service\Sitemap;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
  * Factory for \Sitemap\Queue\GenerateSitemapJob
@@ -20,16 +19,15 @@ use Sitemap\Generator\SitemapGenerator;
  * @author Mathias Gelhausen <gelhausen@cross-solution.de>
  * TODO: write tests
  */
-class GenerateSitemapJobFactory
+class SitemapJobFactory implements FactoryInterface
 {
     public function __invoke(
         ContainerInterface $container,
         ?string $requestedName = null,
         ?array $options = null
     ): GenerateSitemapJob {
-        return new GenerateSitemapJob(
-            $container->get('Sitemap/Events'),
-            $container->get(SitemapGenerator::class)
+        return new $requestedName(
+            $container->get(Sitemap::class)
         );
     }
 }

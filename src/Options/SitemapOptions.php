@@ -41,9 +41,12 @@ class SitemapOptions extends AbstractOptions
      *
      * @param mixed $name
      */
-    public function setName($name): void
+    public function withName($name): self
     {
-        $this->name = $name;
+        $new = clone $this;
+        $new->name = $name;
+
+        return $new;
     }
 
     public function getSitemapName(): string

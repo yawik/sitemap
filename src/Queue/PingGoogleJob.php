@@ -13,6 +13,9 @@ namespace Sitemap\Queue;
 
 use Core\Queue\Job\MongoJob;
 use Zend\Http\Client;
+use Sitemap\Service\Sitemap;
+use Zend\Log\LoggerAwareInterface;
+use Core\Queue\LoggerAwareJobTrait;
 
 /**
  * TODO: description
@@ -20,21 +23,27 @@ use Zend\Http\Client;
  * @author Mathias Gelhausen <gelhausen@cross-solution.de>
  * TODO: write tests
  */
-class PingGoogleJob extends MongoJob
+class PingGoogleJob extends MongoJob implements LoggerAwareInterface
 {
+    use LoggerAwareJobTrait;
+
+    /** @var Sitemap */
+    private $sitemap;
+
+    public function __construct(Sitemap $sitemap)
+    {
+        $this->sitemap = $sitemap;
+    }
+
     public function execute()
     {
-        $client = new Client('http://www.google.com/ping');
-        $client->setParameterGet(['sitemap' => $this->getContent()]);
-        $response = $client->send();
+        $this->sitemap->setLogger($this->getLogger());
+        $result = $this->sitemap->ping($this->getContent());
 
-        if (false && !$response->isOk()) {
-            return $this->failure($response->getReasonPhrase());
+        if ($result->isSuccess()) {
+            return $this->success();
         }
 
-        return $this->success(sprintf(
-            'Pinged: %s',
-            urldecode($client->getRequest()->getUriString())
-        ));
+        return $this->failure($result->getMessage());
     }
 }

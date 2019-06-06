@@ -60,21 +60,31 @@ class SitemapGenerator
         return $this->logger;
     }
 
+    public function getOptions(): SitemapOptions
+    {
+        return clone $this->options;
+    }
+
     public function generate($name, LinkCollection $links)
     {
-        $this->options->setName($name);
-        $sitemap = new Sitemap($this->options->getSitemapName(), true);
+        $options = $this->options->withName($name);
+        $sitemap = new Sitemap($options->getSitemapName(), true);
         $logger = $this->getLogger();
 
         foreach ($links as $link) {
             $urls = [];
-            $languages = $link->getLanguages() ?? $this->options->getLanguages();
+            $languages = ['de']; //$link->getLanguages() ?? $options->getLanguages();
 
             $logger->debug(sprintf(
-                'Process %s: %s',
+                'Process %s(%s) for languages: %s',
                 $link instanceof RouteLink ? 'RouteLink' : 'UrlLink',
-                $link instanceof RouteLink ? $link->getName() : $link->getUrl()
+                $link instanceof RouteLink ? $link->getName() : $link->getUrl(),
+                join(', ', $languages)
             ));
+
+            if (empty($languages)) {
+                $languages = ['_disabled_'];
+            }
 
             foreach ($languages as $lang) {
                 /* NOTE:
@@ -90,15 +100,20 @@ class SitemapGenerator
                         continue 2;
 
                     case $link instanceof UrlLink:
-                        $logger->debug('Process url link: ' . $lang . ' => ' . $link->getUrl());
                         $url = $link->getUrl();
-                        $url = str_replace('%lang%', $lang, $url);
+                        if ($lang != '_disabled_') {
+                            $url = str_replace('%lang%', $lang, $url);
+                        }
                         break;
 
                     case $link instanceof RouteLink:
-                        $logger->debug('Process route link:' . $lang . '=> ' . $link->getName());
+                        $routeParams = $link->getParams();
+
+                        if ($lang != '_disabled_') {
+                            $routeParams = array_merge($routeParams, ['lang' => $lang]);
+                        }
                         $url = $this->router->assemble(
-                            array_merge($link->getParams(), ['lang' => $lang]),
+                            $routeParams,
                             array_merge($link->getOptions(), ['name' => $link->getName()])
                         );
                         break;
@@ -107,10 +122,11 @@ class SitemapGenerator
                 $urls[$lang] = $this->options->prependBaseUrl($url);
             }
 
-            $logger->debug('Urls generated: ' . PHP_EOL . ' - ' . join(PHP_EOL . ' - ', $urls));
             if (count($urls) == 1) {
                 $urls = array_pop($urls);
                 $logger->debug('Use single url: ' . $urls);
+            } else {
+                $logger->debug('Urls generated: ' . PHP_EOL . var_export($urls, true));
             }
 
             $sitemap->addItem($urls, $link->getLastModified(), $link->getChangeFrequency(), $link->getPriority());
@@ -118,14 +134,14 @@ class SitemapGenerator
 
         $sitemap->write();
 
-        $index = new Index($this->options->getSitemapIndexName());
+        $index = new Index($options->getSitemapIndexName());
 
-        foreach ($sitemap->getSitemapUrls($this->options->getSitemapBaseUrl()) as $sitemapUrl) {
+        foreach ($sitemap->getSitemapUrls($options->getSitemapBaseUrl()) as $sitemapUrl) {
             $index->addSitemap($sitemapUrl);
         }
 
         $index->write();
 
-        return $this->options->getSitemapUrl();
+        return $options->getSitemapUrl();
     }
 }

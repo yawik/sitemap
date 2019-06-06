@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * YAWIK Sitemap
  *
@@ -7,18 +7,14 @@
  * @license MIT
  */
 
-declare(strict_types=1);
-
 namespace Sitemap\Queue;
 
 use Core\Queue\Job\MongoJob;
 use Core\Queue\LoggerAwareJobTrait;
-use Zend\Log\LoggerAwareInterface;
-use Core\EventManager\EventManager;
-use Sitemap\Event\GenerateSitemapEvent;
-use Sitemap\Generator\SitemapGenerator;
+use Sitemap\Service\Sitemap;
 use SlmQueue\Queue\QueueAwareInterface;
 use SlmQueue\Queue\QueueAwareTrait;
+use Zend\Log\LoggerAwareInterface;
 
 /**
  * TODO: description
@@ -33,15 +29,13 @@ class GenerateSitemapJob extends MongoJob implements
     use LoggerAwareJobTrait;
     use QueueAwareTrait;
 
-    /** @var EventManager */
-    private $events;
-
+    /** @var Sitemap */
+    private $sitemap;
     protected $content = [];
 
-    public function __construct(EventManager $events, SitemapGenerator $generator)
+    public function __construct(Sitemap $sitemap)
     {
-        $this->events = $events;
-        $this->generator = $generator;
+        $this->sitemap = $sitemap;
     }
 
     public function getPayload(?string $key = null, $default = null)
@@ -64,43 +58,13 @@ class GenerateSitemapJob extends MongoJob implements
 
     public function execute()
     {
-        $logger = $this->getLogger();
-        $name = $this->getPayload('name');
-        $logger->info('Fetching links for sitemap: ' . $name);
-        $event = $this->events->getEvent(
-            GenerateSitemapEvent::getEventName($name),
-            $this,
-            [
-                'sitemap_name' => $name,
-                'logger' => $logger,
-            ]
-        );
-        $this->events->triggerEvent($event);
-        $linkCollection = $event->getLinkCollection();
+        $this->sitemap->setLogger($this->getLogger());
+        $result = $this->sitemap->generate($this->getPayload('name'));
 
-        if (!count($linkCollection)) {
-            return $this->failure('No links were fetched.');
+        if ($result->isSuccess()) {
+            return $this->success();
         }
 
-        $logger->info('Generating sitemap: ' . $name);
-        $this->generator->setLogger($logger);
-        try {
-            $sitemapUrl = $this->generator->generate($name, $linkCollection);
-        } catch (\Exception $e) {
-            $logger->err($e->getMessage());
-
-            return $this->failure(
-                $e->getMessage(),
-                [
-                    'type' => get_class($e),
-                    'message' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString()
-                ]
-            );
-        }
-        $logger->info('Generated sitemap: ' . $name . ' -> ' . $sitemapUrl);
-        $this->getQueue()->push(PingGoogleJob::create($sitemapUrl));
-
-        return $this->success();
+        return $this->failure($result->getMessage());
     }
 }

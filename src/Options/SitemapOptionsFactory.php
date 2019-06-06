@@ -27,8 +27,14 @@ class SitemapOptionsFactory
         ?array $options = null
     ): SitemapOptions {
         $sitemapOptions = $container->get('Config')['options'][SitemapOptions::class] ?? [];
-        $languages = $container->get('Core/Options')->getSupportedLanguages();
-        $sitemapOptions['languages'] = array_keys($languages);
+
+        if (!isset($sitemapOptions['languages'])) {
+            $languages = $container->get('Core/Options')->getSupportedLanguages();
+            $sitemapOptions['languages'] = array_keys($languages);
+        } elseif (!is_array($sitemapOptions['languages'])) {
+            $sitemapOptions['languages'] = [];
+        }
+        unset($sitemapOptions['name']);
 
         return new SitemapOptions($sitemapOptions);
     }

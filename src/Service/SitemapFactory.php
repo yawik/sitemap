@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * YAWIK Sitemap
  *
@@ -7,14 +7,13 @@
  * @license MIT
  */
 
-declare(strict_types=1);
-
-namespace Sitemap\Controller\Plugin;
+namespace Sitemap\Service;
 
 use Interop\Container\ContainerInterface;
+use Sitemap\Generator\SitemapGenerator;
 
 /**
- * Factory for \Sitemap\Controller\Plugin\Sitemap
+ * Factory for \Sitemap\Service\Sitemap
  *
  * @author Mathias Gelhausen <gelhausen@cross-solution.de>
  * TODO: write tests
@@ -27,8 +26,8 @@ class SitemapFactory
         ?array $options = null
     ): Sitemap {
         return new Sitemap(
-            $container->get(\Sitemap\Service\Sitemap::class),
-            $container->get('Log/Sitemap/Console')
+            $container->get('Sitemap/Events'),
+            $container->get(SitemapGenerator::class)
         );
     }
 }

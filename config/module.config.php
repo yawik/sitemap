@@ -9,6 +9,7 @@ return [
             Options\SitemapOptions::class => Options\SitemapOptionsFactory::class,
             Event\FetchJobLinksListener::class => Event\FetchJobLinksListenerFactory::class,
             Event\JobDbEventsSubscriber::class => Event\JobDbEventsSubscriberFactory::class,
+            Service\Sitemap::class => Service\SitemapFactory::class,
         ],
     ],
 
@@ -28,15 +29,15 @@ return [
         ]
     ],
 
-    'doctrine' => [
-        'eventmanager' => [
-            'odm_default' => [
-                'subscribers' => [
-                    Event\JobDbEventsSubscriber::class,
-                ],
-            ],
-        ],
-    ],
+    // 'doctrine' => [
+    //     'eventmanager' => [
+    //         'odm_default' => [
+    //             'subscribers' => [
+    //                 Event\JobDbEventsSubscriber::class,
+    //             ],
+    //         ],
+    //     ],
+    // ],
 
     'event_manager' => [
         'Sitemap/Events' => [
@@ -76,7 +77,8 @@ return [
         ],
         'job_manager' => [
             'factories' => [
-                Queue\GenerateSitemapJob::class => Queue\GenerateSitemapJobFactory::class,
+                Queue\GenerateSitemapJob::class => Queue\SitemapJobFactory::class,
+                Queue\PingGoogleJob::class => Queue\SitemapJobFactory::class,
             ],
         ],
     ],
@@ -102,6 +104,23 @@ return [
                 ['name' => \Core\Log\Processor\ProcessId::class],
             ],
         ],
+        'Log/Sitemap/Console' => [
+            'writers' => [
+                [
+                    'name' => 'stream',
+                    'priority' => 1000,
+                    'options' => [
+                        'stream' => STDOUT,
+                        'formatter' => [
+                            'name' => 'simple',
+                            'options' => [
+                                'format' => '%priorityName%: %message%'
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
     ],
 
     'console' => [
@@ -113,6 +132,26 @@ return [
                         'defaults' => [
                             'controller' => Controller\ConsoleController::class,
                             'action' => 'generate',
+                            'ping' => false,
+                        ]
+                    ]
+                ],
+                'sitemap-ping' => [
+                    'options' => [
+                        'route' => 'sitemap ping <name>',
+                        'defaults' => [
+                            'controller' => Controller\ConsoleController::class,
+                            'action' => 'generate',
+                            'ping' => true,
+                        ]
+                    ]
+                ],
+                'sitemap-enqueue' => [
+                    'options' => [
+                        'route' => 'sitemap enqueue <name>',
+                        'defaults' => [
+                            'controller' => Controller\ConsoleController::class,
+                            'action' => 'enqueue',
                         ]
                     ]
                 ],
