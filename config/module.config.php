@@ -110,7 +110,7 @@ return [
                     'name' => 'stream',
                     'priority' => 1000,
                     'options' => [
-                        'stream' => STDOUT,
+                        'stream' => 'php://stdout',
                         'formatter' => [
                             'name' => 'simple',
                             'options' => [
