@@ -13,7 +13,7 @@ namespace Sitemap\Controller\Plugin;
 
 use Core\EventManager\EventManager;
 use Sitemap\Event\ListSitemapGeneratorsEvent;
-use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 
 /**
  * TODO: description

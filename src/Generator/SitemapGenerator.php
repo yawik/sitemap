@@ -13,12 +13,12 @@ namespace Sitemap\Generator;
 
 use Sitemap\Entity\LinkCollection;
 use Sitemap\Options\SitemapOptions;
-use Zend\Router\RouteInterface;
+use Laminas\Router\RouteInterface;
 use samdark\sitemap\Index;
 use samdark\sitemap\Sitemap;
 use Sitemap\Entity\UrlLink;
 use Sitemap\Entity\RouteLink;
-use Zend\Log\LoggerInterface;
+use Laminas\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
 
 /**

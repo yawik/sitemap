@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Sitemap\Controller;
 
-use Zend\Mvc\Console\Controller\AbstractConsoleController;
+use Laminas\Mvc\Console\Controller\AbstractConsoleController;
 use Sitemap\Queue\GenerateSitemapJob;
 
 /**

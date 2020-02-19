@@ -12,10 +12,12 @@ declare(strict_types=1);
 namespace Sitemap;
 
 use Yawik\Composer\RequireDirectoryPermissionInterface;
-use Zend\ModuleManager\Feature\ConsoleBannerProviderInterface;
-use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
+use Laminas\ModuleManager\Feature\ConsoleBannerProviderInterface;
+use Laminas\ModuleManager\Feature\ConsoleUsageProviderInterface;
+use Core\ModuleManager\Feature\VersionProviderInterface;
+use Core\ModuleManager\Feature\VersionProviderTrait;
 use Sitemap\Controller\ConsoleController;
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Laminas\ModuleManager\Feature\ConfigProviderInterface;
 
 /**
  * TODO: description
@@ -27,8 +29,13 @@ class Module implements
     ConfigProviderInterface,
     RequireDirectoryPermissionInterface,
     ConsoleBannerProviderInterface,
-    ConsoleUsageProviderInterface
+    ConsoleUsageProviderInterface,
+    VersionProviderInterface
 {
+    use VersionProviderTrait;
+
+    const VERSION = '0.4.0';
+
     public function getRequiredDirectoryLists(\Core\Options\ModuleOptions $options)
     {
         return [
@@ -36,12 +43,12 @@ class Module implements
         ];
     }
 
-    public function getConsoleBanner(\Zend\Console\Adapter\AdapterInterface $console)
+    public function getConsoleBanner(\Laminas\Console\Adapter\AdapterInterface $console)
     {
         return __NAMESPACE__ . ' 0.1';
     }
 
-    public function getConsoleUsage(\Zend\Console\Adapter\AdapterInterface $console)
+    public function getConsoleUsage(\Laminas\Console\Adapter\AdapterInterface $console)
     {
         return ConsoleController::getConsoleUsage();
     }

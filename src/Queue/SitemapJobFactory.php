@@ -11,7 +11,7 @@ namespace Sitemap\Queue;
 
 use Interop\Container\ContainerInterface;
 use Sitemap\Service\Sitemap;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 /**
  * Factory for \Sitemap\Queue\GenerateSitemapJob

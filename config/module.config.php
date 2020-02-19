@@ -15,7 +15,7 @@ return [
 
     'controllers' => [
         'factories' => [
-            Controller\ConsoleController::class => \Zend\ServiceManager\Factory\InvokableFactory::class,
+            Controller\ConsoleController::class => \Laminas\ServiceManager\Factory\InvokableFactory::class,
         ],
     ],
 

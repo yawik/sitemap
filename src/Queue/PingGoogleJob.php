@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace Sitemap\Queue;
 
 use Core\Queue\Job\MongoJob;
-use Zend\Http\Client;
+use Laminas\Http\Client;
 use Sitemap\Service\Sitemap;
-use Zend\Log\LoggerAwareInterface;
+use Laminas\Log\LoggerAwareInterface;
 use Core\Queue\LoggerAwareJobTrait;
 
 /**

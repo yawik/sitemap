@@ -14,7 +14,7 @@ use Core\Queue\LoggerAwareJobTrait;
 use Sitemap\Service\Sitemap;
 use SlmQueue\Queue\QueueAwareInterface;
 use SlmQueue\Queue\QueueAwareTrait;
-use Zend\Log\LoggerAwareInterface;
+use Laminas\Log\LoggerAwareInterface;
 
 /**
  * TODO: description

@@ -10,8 +10,8 @@
 namespace Sitemap\Controller\Plugin;
 
 use Sitemap\Service\Sitemap as SitemapService;
-use Zend\Log\LoggerInterface;
-use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Laminas\Log\LoggerInterface;
+use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 
 /**
  * TODO: description

@@ -12,9 +12,9 @@ namespace Sitemap\Service;
 use Core\EventManager\EventManager;
 use Sitemap\Event\GenerateSitemapEvent;
 use Sitemap\Generator\SitemapGenerator;
-use Zend\Http\Client;
-use Zend\Log\LoggerAwareInterface;
-use Zend\Log\LoggerAwareTrait;
+use Laminas\Http\Client;
+use Laminas\Log\LoggerAwareInterface;
+use Laminas\Log\LoggerAwareTrait;
 use function urldecode;
 
 /**

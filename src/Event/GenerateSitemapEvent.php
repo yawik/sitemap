@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace Sitemap\Event;
 
-use Zend\EventManager\Event;
+use Laminas\EventManager\Event;
 use Sitemap\Entity\LinkCollection;
-use Zend\Log\LoggerInterface;
+use Laminas\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
 
 /**

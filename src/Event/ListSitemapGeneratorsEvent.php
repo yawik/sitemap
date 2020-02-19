@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Sitemap\Event;
 
-use Zend\EventManager\Event;
+use Laminas\EventManager\Event;
 
 /**
  * TODO: description
