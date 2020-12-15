@@ -34,7 +34,7 @@ class Module implements
 {
     use VersionProviderTrait;
 
-    const VERSION = '0.4.0';
+    const VERSION = '0.5.0';
 
     public function getRequiredDirectoryLists(\Core\Options\ModuleOptions $options)
     {
